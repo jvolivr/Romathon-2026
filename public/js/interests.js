@@ -1,23 +1,24 @@
-import { getItem } from './data/repository.js';
-export const STORAGE_KEY = 'rota-criativa:demo:interesses:v1';
 let ids = new Set();
-let storageAvailable = true;
-try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    const saved = raw ? JSON.parse(raw) : [];
-    if (!Array.isArray(saved) || saved.some(id => typeof id !== 'string')) throw new Error('Dados inválidos');
-    ids = new Set(saved.filter(id => getItem(id)));
-} catch { try { sessionStorage.removeItem(STORAGE_KEY); } catch { storageAvailable = false; } }
-export const hasInterest = id => ids.has(id);
+const pending = new Set();
+export const hasInterest = id => ids.has(Number(id));
 export const getInterests = () => [...ids];
-export const canStore = () => storageAvailable;
-export function toggleInterest(id) {
-    if (!getItem(id)) return;
-    ids.has(id) ? ids.delete(id) : ids.add(id);
-    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify([...ids])); } catch { storageAvailable = false; }
-    document.dispatchEvent(new CustomEvent('interestschange'));
+export async function loadInterests() {
+    const response = await fetch('/api/interests', { cache: 'no-store' });
+    if (response.status === 401) { ids.clear(); return; }
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error);
+    ids = new Set(result.ids);
 }
-export function clearInterests() {
-    ids.clear();
-    try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* A memória já foi limpa. */ }
+export async function toggleInterest(value) {
+    const id = Number(value);
+    if (pending.has(id)) return;
+    pending.add(id);
+    try {
+        const saved = ids.has(id);
+        const response = await fetch(`/api/interests/${id}`, { method: saved ? 'DELETE' : 'PUT' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+        saved ? ids.delete(id) : ids.add(id);
+        document.dispatchEvent(new CustomEvent('interestschange'));
+    } finally { pending.delete(id); }
 }

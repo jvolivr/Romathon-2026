@@ -1,25 +1,28 @@
-import { getCatalog, getItem } from './data/repository.js';
-import { categorias } from './data/catalogo.js';
+import { getItem, loadCatalog, categorias } from './data/repository.js';
 import { filterCatalog } from './filters.js';
 import { card } from './cards.js';
-import { getInterests, toggleInterest, clearInterests, canStore } from './interests.js';
+import { getInterests, toggleInterest, loadInterests } from './interests.js';
 import { notify } from './modals.js';
 import './forms.js';
 import './pwa.js';
-const items = getCatalog();
+let items = [];
+let catalogError = '';
 let category = 'Todos';
 let query = '';
-let mode = 'list';
 const search = document.querySelector('#search');
 function renderExplore() {
     if (!search) return;
+    if (catalogError) {
+        document.querySelector('#result-count').textContent = catalogError;
+        document.querySelector('#cards').hidden = true;
+        document.querySelector('#empty').hidden = true;
+        return;
+    }
     const filtered = filterCatalog(items, query, category);
     document.querySelector('#result-count').textContent = `${filtered.length} ${filtered.length === 1 ? 'experiência para descobrir' : 'experiências para descobrir'}`;
     document.querySelector('#cards').innerHTML = filtered.map(card).join('');
-    document.querySelector('#cards').hidden = mode !== 'list' || !filtered.length;
-    document.querySelector('#map').hidden = mode !== 'map' || !filtered.length;
+    document.querySelector('#cards').hidden = !filtered.length;
     document.querySelector('#empty').hidden = Boolean(filtered.length);
-    document.querySelector('#markers').innerHTML = filtered.map(item => `<button class="marker" style="--x:${item.position.x}%;--y:${item.position.y}%" data-detail="${item.id}" aria-label="Ver detalhes de ${item.name}"><span aria-hidden="true">⌖</span><small>${item.name}</small></button>`).join('');
 }
 function renderInterests() {
     document.querySelectorAll('.saved-count').forEach(node => { node.textContent = getInterests().length; });
@@ -36,13 +39,12 @@ if (search) {
     document.querySelector('#categories').addEventListener('click', event => { const button = event.target.closest('[data-category]'); if (!button) return; category = button.dataset.category; syncCategories(); renderExplore(); });
     document.querySelector('#clear-filters').addEventListener('click', reset);
     document.querySelector('[data-clear]').addEventListener('click', () => { reset(); search.focus(); });
-    for (const view of ['list', 'map']) document.querySelector(`#${view}-view`).addEventListener('click', () => { mode = view; for (const v of ['list', 'map']) document.querySelector(`#${v}-view`).setAttribute('aria-pressed', String(v === view)); renderExplore(); });
     renderExplore();
 }
 renderInterests();
-document.addEventListener('click', event => {
+document.addEventListener('click', async event => {
     const save = event.target.closest('[data-save]');
-    if (save) { toggleInterest(save.dataset.save); if (!canStore()) notify('Armazenamento indisponível. Interesses mantidos apenas nesta página.'); }
+    if (save) { try { await toggleInterest(save.dataset.save); } catch (error) { notify(error.message || 'Não foi possível salvar. Tente novamente.'); } }
 });
 document.addEventListener('interestschange', () => {
     const focused = document.activeElement;
@@ -54,5 +56,36 @@ document.addEventListener('interestschange', () => {
         (replacement || document.querySelector('#interests button, #interest-empty a'))?.focus();
     }
 });
-document.querySelector('#exit-demo')?.addEventListener('click', () => { clearInterests(); location.replace('/'); });
-if (!canStore()) notify('Armazenamento indisponível. Os interesses durarão apenas nesta página.');
+document.querySelector('#exit-demo')?.addEventListener('click', async () => {
+    try {
+        const response = await fetch('/api/logout', { method: 'POST' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+        location.replace('/');
+    } catch (error) { notify(error.message || 'Não foi possível sair. Tente novamente.'); }
+});
+async function refresh() {
+    if (!search && !document.querySelector('#interests')) return;
+    try {
+        items = await loadCatalog();
+        catalogError = '';
+        renderExplore();
+    } catch (error) {
+        catalogError = error.message || 'Não foi possível carregar os serviços.';
+        renderExplore();
+        const empty = document.querySelector('#interest-empty');
+        if (empty) { empty.hidden = false; empty.textContent = error.message || 'Não foi possível carregar os serviços.'; }
+        notify(error.message || 'Não foi possível carregar os serviços.');
+        return;
+    }
+    try { await loadInterests(); renderExplore(); renderInterests(); }
+    catch (error) {
+        const empty = document.querySelector('#interest-empty');
+        if (empty) { empty.hidden = false; empty.textContent = error.message || 'Não foi possível carregar os interesses.'; }
+        notify(error.message || 'Não foi possível carregar os interesses.');
+    }
+}
+document.addEventListener('catalogchange', refresh);
+refresh();
+// Evita restaurar dados de uma conta anterior pelo histórico do navegador.
+window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });

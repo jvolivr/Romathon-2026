@@ -4,7 +4,7 @@
         <nav aria-label="Navegação principal"><a href="/explorar" <%- page==='explorar' ? 'aria-current="page"' : ''
                 %>>Explorar</a><a href="/meu-espaco" <%- page==='meu-espaco' ? 'aria-current="page"' : '' %>>Meu espaço
                 <span class="saved-count">0</span></a></nav><span class="header-note">
-            <%= page==='entrada' ? 'Feito de encontros.' : 'Olá, visitante!' %>
+            <%= page==='entrada' ? 'Feito de encontros.' : user ? 'Olá, ' + user.name + '!' : 'Olá, visitante!' %>
         </span><button class="install secondary small" hidden>Instalar aplicativo</button>
     </div>
 </header>

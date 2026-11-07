@@ -1,5 +1,5 @@
 const PREFIX = 'rota-criativa-public-';
-const CACHE = PREFIX + 'v1';
+const CACHE = PREFIX + 'v3';
 const ASSETS = [
   "/css/style.css",
   "/images/avatar.svg",
@@ -11,7 +11,6 @@ const ASSETS = [
   "/images/sabores.svg",
   "/js/app.js",
   "/js/cards.js",
-  "/js/data/catalogo.js",
   "/js/data/repository.js",
   "/js/filters.js",
   "/js/forms.js",
@@ -26,7 +25,7 @@ const ASSETS = [
   "/icons/maskable-512.png"
 ];
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith(PREFIX) && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));

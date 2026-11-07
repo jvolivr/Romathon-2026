@@ -45,7 +45,8 @@ dialog.addEventListener('keydown', event => {
 });
 export function showDetails(id) {
     const item = getItem(id); if (!item) return;
-    openModal(`<img class="detail-image" src="${item.image}" alt="${e(item.imageAlt)}"><span class="eyebrow">${item.category} · ${item.neighborhood}</span><h2 id="modal-title">${item.name}</h2><p>${item.description}</p><p class="notice">Exemplo fictício. Preços, horários e endereços são demonstrativos.</p><dl class="detail-facts">${Object.entries(item.details).map(([key, value]) => `<div><dt>${e(key)}</dt><dd>${e(value)}</dd></div>`).join('')}<div><dt>${item.type === 'guia' ? 'Preço e disponibilidade' : 'Preço'}</dt><dd>${item.type === 'guia' ? 'A combinar' : item.price}</dd></div><div><dt>Endereço demonstrativo</dt><dd>${item.address}</dd></div><div><dt>Informações de acesso</dt><dd>${item.access || 'Condições de acesso não informadas. Consulte o responsável.'}</dd></div></dl>${item.relatedGuides.length ? `<section class="related"><h3>Encontre um guia para esta visita</h3><p>Exemplos por região, sem vínculo oficial com o espaço.</p>${item.relatedGuides.map(id => `<button class="secondary" data-detail="${id}">${getItem(id).name} ↗</button>`).join('')}</section>` : ''}<div class="modal-actions"><span id="detail-save">${interestButton(item, true)}</span><button class="primary" data-contact>${item.type === 'guia' ? 'Combinar passeio' : 'Contatar'} ↗</button></div><p id="contact-notice" role="status"></p>`);
+    const facts = { ...item.details, ...(item.address ? { 'Endereço': item.address } : {}) };
+    openModal(`<img class="detail-image" src="${e(item.image)}" alt="${e(item.imageAlt)}"><span class="eyebrow">${e(item.category)} · ${e(item.neighborhood)}</span><h2 id="modal-title">${e(item.name)}</h2><p>${e(item.description)}</p><dl class="detail-facts">${Object.entries(facts).map(([key,value]) => `<div><dt>${e(key)}</dt><dd>${e(value)}</dd></div>`).join('')}</dl><div class="modal-actions"><span id="detail-save">${interestButton(item,true)}</span><button class="primary" data-contact>Contatar ↗</button></div><p id="contact-notice" role="status"></p>`);
     currentItem = item;
 }
 document.addEventListener('interestschange', () => {
@@ -56,5 +57,5 @@ document.addEventListener('interestschange', () => {
 });
 document.addEventListener('click', event => {
     const detail = event.target.closest('[data-detail]'); if (detail) showDetails(detail.dataset.detail);
-    if (event.target.closest('[data-contact]')) document.querySelector('#contact-notice').textContent = 'O contato direto será disponibilizado após o cadastro de um parceiro real.';
+    if (event.target.closest('[data-contact]')) document.querySelector('#contact-notice').textContent = currentItem?.contact || 'Contato não informado.';
 });

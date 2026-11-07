@@ -2,29 +2,38 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { catalogo, categorias } from '../public/js/data/catalogo.js';
 import { filterCatalog } from '../public/js/filters.js';
+import { categorias } from '../public/js/data/repository.js';
+import { card } from '../public/js/cards.js';
+import { profile, password, serviceId } from '../services/validation.js';
 
-test('Busca ignora acentos, combina categoria e pesquisa bairro', () => {
- assert.equal(filterCatalog(catalogo,'BARRO','Oficinas')[0].id,'barro-vivo');
- assert.equal(filterCatalog(catalogo,'mauricio','Alimentação')[0].id,'mesa-sertao');
- assert.equal(filterCatalog(catalogo,'barro','Cultura').length,0);
- assert.equal(filterCatalog(catalogo,'').length,7);
- assert.equal(filterCatalog(catalogo,'inexistente').length,0);
+test('Busca ignora acentos e combina categoria e bairro', () => {
+ const items = [{id:1,name:'Barro',description:'Oficina',neighborhood:'Centro',category:'Artesão ou oficina'}, {id:2,name:'Mesa',description:'Almoço',neighborhood:'Maurício',category:'Restaurante'}];
+ assert.equal(filterCatalog(items,'MAURICIO','Restaurante')[0].id,2);
+ assert.equal(filterCatalog(items,'barro','Restaurante').length,0);
+ assert.equal(filterCatalog(items,'').length,2);
+ assert.equal(filterCatalog([], '').length,0);
+ assert.equal(categorias.length,5);
 });
-test('Catálogo possui IDs únicos, categorias completas e imagens locais', () => {
- assert.equal(new Set(catalogo.map(i=>i.id)).size,catalogo.length);
- for (const c of categorias.slice(1)) assert.ok(catalogo.some(i=>i.category===c));
- for (const item of catalogo) {
-  assert.ok(readFileSync(new URL('../public'+item.image,import.meta.url)).length);
-  assert.equal(item.contactUrl,null);
-  for (const id of item.relatedGuides) assert.ok(catalogo.some(i=>i.id===id && i.type==='guia'));
- }
+test('Cartões escapam conteúdo cadastrado e não inventam preços', () => {
+ const html = card({id:1,name:'<script>alert(1)</script>',description:'<img onerror="alert(1)">',neighborhood:'<b>Centro</b>',category:'Restaurante',image:'/images/sabores.svg',imageAlt:'Ilustração'});
+ assert.ok(!html.includes('<script>'));
+ assert.ok(!html.includes('<img onerror'));
+ assert.ok(html.includes('&lt;b&gt;Centro'));
+ assert.ok(!html.includes('Valor ilustrativo'));
+});
+test('Validação de perfil, senha e IDs', () => {
+ assert.equal(profile({name:' JV ',email:' JV@EXAMPLE.COM '}).email,'jv@example.com');
+ for (const value of ['curta','a'.repeat(129),{},null]) assert.throws(()=>password(value));
+ assert.equal(password('a'.repeat(128)).length,128);
+ for (const value of ['1 OR 1=1','barro-vivo',0,-1,'2147483648']) assert.throws(()=>serviceId(value));
+ assert.equal(serviceId('12'),12);
+ assert.throws(()=>profile({name:'J',email:'invalido'}));
 });
 function worker(fetchImpl) {
  const listeners = {}; const deleted = []; const precache = [];
  const cache = { addAll: async a=>precache.push(...a), match: async path=> path === '/offline.html' ? 'OFFLINE' : 'STATIC' };
- const context = { URL, fetch: fetchImpl, caches: { open: async()=>cache, keys: async()=>['other-app-v1','rota-criativa-public-v0','rota-criativa-public-v1'], delete: async key=>deleted.push(key) }, self: { location:{origin:'https://example.com'}, clients:{claim:async()=>{}}, addEventListener:(name,fn)=>listeners[name]=fn } };
+ const context = { URL, fetch: fetchImpl, caches: { open: async()=>cache, keys: async()=>['other-app-v1','rota-criativa-public-v0','rota-criativa-public-v1'], delete: async key=>deleted.push(key) }, self: { skipWaiting:async()=>{}, location:{origin:'https://example.com'}, clients:{claim:async()=>{}}, addEventListener:(name,fn)=>listeners[name]=fn } };
  vm.runInNewContext(readFileSync(new URL('../public/sw.js',import.meta.url),'utf8'), context);
  return { listeners, deleted, precache };
 }
@@ -35,7 +44,7 @@ test('Service worker só prepara estáticos e remove caches próprios', async ()
  assert.ok(!w.precache.some(p=>['/','/explorar','/meu-espaco'].includes(p) || p.startsWith('/api')));
  for (const path of w.precache) assert.ok(readFileSync(new URL('../public'+path,import.meta.url)).length);
  w.listeners.activate({waitUntil:p=>done=p}); await done;
- assert.deepEqual(w.deleted,['rota-criativa-public-v0']);
+ assert.deepEqual(w.deleted,['rota-criativa-public-v0','rota-criativa-public-v1']);
 });
 test('Service worker preserva erros HTTP, ignora APIs/POST/externos e usa fallback de rede', async () => {
  let intercepted;
