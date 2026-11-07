@@ -1,6 +1,6 @@
 <%- include('includes/head') %><%- include('includes/header') %>
         <main id="conteudo">
-            <div class="demo-strip">Você está em uma demonstração. Lugares, profissionais e valores são ilustrativos.
+            <div class="demo-strip">Protótipo: serviços cadastrados pelos usuários. Ilustrações por categoria.
             </div>
             <section class="explore-hero container">
                 <div><span class="eyebrow">CULTURA VIVA. ENCONTROS DE VERDADE.</span>
@@ -18,9 +18,7 @@
                     <div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="search">Buscar
                             experiências</label><input id="search" type="search"
                             placeholder="Busque lugares, sabores e experiências"></div>
-                    <div class="view-switch" role="group" aria-label="Modo de visualização"><button id="list-view"
-                            aria-pressed="true">▦ Lista</button><button id="map-view" aria-pressed="false">⌖
-                            Mapa</button></div>
+
                 </div>
                 <div id="categories" class="categories" role="group" aria-label="Filtrar por categoria"></div>
                 <div class="results-bar">
@@ -28,15 +26,9 @@
                         filtros</button>
                 </div>
                 <div id="cards" class="cards"></div>
-                <section id="map" class="map" aria-label="Mapa ilustrativo" hidden>
-                    <div class="map-caption"><strong>Mapa ilustrativo</strong><small>Posições simbólicas, sem escala ou
-                            rotas.</small></div><span class="map-neighborhood alto">Alto do Moura</span><span
-                        class="map-neighborhood centro">Centro</span>
-                    <div id="markers"></div>
-                </section>
                 <div id="empty" class="empty-state" hidden><span aria-hidden="true">⌕</span>
                     <h2>Nenhuma descoberta por aqui.</h2>
-                    <p>Experimente outro termo ou limpe os filtros.</p><button class="secondary" data-clear>Limpar
+                    <p>Ainda não há serviços para esta busca. Cadastre um serviço ou limpe os filtros.</p><button class="secondary" data-clear>Limpar
                         filtros</button>
                 </div>
             </section>

@@ -1,5 +1,5 @@
 const PREFIX = 'rota-criativa-public-';
-const CACHE = PREFIX + 'v2';
+const CACHE = PREFIX + 'v3';
 const ASSETS = [
   "/css/style.css",
   "/images/avatar.svg",
@@ -11,7 +11,6 @@ const ASSETS = [
   "/images/sabores.svg",
   "/js/app.js",
   "/js/cards.js",
-  "/js/data/catalogo.js",
   "/js/data/repository.js",
   "/js/filters.js",
   "/js/forms.js",
