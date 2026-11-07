@@ -108,8 +108,52 @@ CREATE INDEX IF NOT EXISTS idx_interesse_servico
 
 COMMIT;
 
-SELECT table_name
-FROM information_schema.tables
-WHERE table_schema = 'public'
-  AND table_name IN ('usuario', 'sessao', 'servico', 'interesse')
-ORDER BY table_name;
+-- SEEDS PARA EXEMPLOS
+BEGIN;
+
+INSERT INTO usuario (nome, email, salt, senha_hash) VALUES
+  ('Museu do Forró', 'demo.museu@demo.local',   'sem-login', 'sem-login'),
+  ('Estação Ferroviária',        'demo.estacao@demo.local', 'sem-login', 'sem-login'),
+  ('Pátio de Eventos',          'demo.patio@demo.local',   'sem-login', 'sem-login'),
+  ('Feira Via parque',          'demo.feira@demo.local',   'sem-login', 'sem-login')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO servico (id_usuario, tipo, nome, descricao, bairro, endereco, contato)
+SELECT id_usuario, 'cultura', 'Museu do Forró Luiz Gonzaga',
+  'Museu dedicado a Luiz Gonzaga e à história do forró, com discos, fotografias, indumentárias e instrumentos musicais. Inaugurado em 1986.',
+  'Centro', NULL, 'Fundação de Cultura e Turismo de Caruaru: (81) 3721-1257'
+FROM usuario WHERE email = 'demo.museu@demo.local'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO servico (id_usuario, tipo, nome, descricao, bairro, endereco, contato)
+SELECT id_usuario, 'cultura', 'Estação Ferroviária de Caruaru',
+  'Prédio histórico inaugurado em 1895, que recebia o Trem do Forró. Hoje é polo cultural e palco de apresentações do São João.',
+  'Centro', NULL, 'Fundação de Cultura e Turismo de Caruaru: (81) 3721-1257'
+FROM usuario WHERE email = 'demo.estacao@demo.local'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO servico (id_usuario, tipo, nome, descricao, bairro, endereco, contato)
+SELECT id_usuario, 'cultura', 'Pátio de Eventos Luiz Gonzaga',
+  'Principal palco dos grandes shows do São João de Caruaru e de outros eventos da cidade.',
+  'Centro', NULL, 'Fundação de Cultura e Turismo de Caruaru: (81) 3721-1257'
+FROM usuario WHERE email = 'demo.patio@demo.local'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO servico (id_usuario, tipo, nome, descricao, bairro, endereco, contato, horarios, especialidades)
+SELECT id_usuario, 'cultura', 'Feira da Agricultura Familiar (Via Parque)',
+  'Feira semanal de produtores da região, na Via Parque, em frente à Acic.',
+  'Centro', 'Via Parque, em frente à Acic', 'Prefeitura de Caruaru',
+  'Quintas-feiras, das 5h às 12h', 'Frutas, verduras, legumes, tapioca, bolos, ovos e mel'
+FROM usuario WHERE email = 'demo.feira@demo.local'
+ON CONFLICT DO NOTHING;
+
+COMMIT;
+--  *******
+
+SELECT * FROM usuario;
+
+SELECT id_usuario, nome, email FROM usuario;
+
+SELECT id_servico, id_usuario, tipo, nome FROM servico;
+
+SELECT id_usuario, id_servico FROM interesse;

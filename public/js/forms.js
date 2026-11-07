@@ -32,7 +32,7 @@ if (login) bindForm(login, async form => {
     try {
         const response = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: form.elements.email.value, password: form.elements.password.value }) });
         const result = await response.json(); if (!response.ok) throw new Error(result.error);
-        location.assign('/meu-espaco');
+        location.assign('/explorar');
     } catch (error) { status.textContent = error.message || 'Não foi possível entrar. Tente novamente.'; clearPasswords(form); }
 });
 document.addEventListener('click', event => {
@@ -76,7 +76,7 @@ function showForm(type) {
             try {
                 const response = await fetch('/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: form.elements.name.value, email: form.elements.email.value, password: form.elements.password.value }) });
                 const result = await response.json(); if (!response.ok) throw new Error(result.error);
-                location.assign('/meu-espaco');
+                location.assign('/explorar');
             } catch (error) { status.textContent = error.message || 'Não foi possível criar a conta.'; clearPasswords(form); }
         } else if (type === 'profile') {
             status.textContent = 'Salvando…';
