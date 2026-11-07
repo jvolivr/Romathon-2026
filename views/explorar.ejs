@@ -1,0 +1,49 @@
+<%- include('includes/head') %><%- include('includes/header') %>
+        <main id="conteudo">
+            <div class="demo-strip">Você está em uma demonstração. Lugares, profissionais e valores são ilustrativos.
+            </div>
+            <section class="explore-hero container">
+                <div><span class="eyebrow">CULTURA VIVA. ENCONTROS DE VERDADE.</span>
+                    <h1>Explore <em>Caruaru.</em></h1>
+                    <p>Tem arte em cada esquina e uma história esperando por você.<br>Descubra lugares, sabores e quem
+                        faz tudo acontecer.</p><a href="#catalogo" class="text-button">Encontre sua próxima experiência
+                        <span aria-hidden="true">↘</span></a>
+                </div>
+                <div class="hero-art"><img src="/images/cidade.svg"
+                        alt="Ilustração de casinhas coloridas e sol sobre a paisagem de Caruaru"><span
+                        class="art-label">Um novo olhar para o que é nosso.</span></div>
+            </section>
+            <section class="catalog-section container" id="catalogo" aria-label="Catálogo de experiências">
+                <div class="search-row">
+                    <div class="search-box"><span aria-hidden="true">⌕</span><label class="sr-only" for="search">Buscar
+                            experiências</label><input id="search" type="search"
+                            placeholder="Busque lugares, sabores e experiências"></div>
+                    <div class="view-switch" role="group" aria-label="Modo de visualização"><button id="list-view"
+                            aria-pressed="true">▦ Lista</button><button id="map-view" aria-pressed="false">⌖
+                            Mapa</button></div>
+                </div>
+                <div id="categories" class="categories" role="group" aria-label="Filtrar por categoria"></div>
+                <div class="results-bar">
+                    <p id="result-count" role="status"></p><button id="clear-filters" class="text-button">Limpar
+                        filtros</button>
+                </div>
+                <div id="cards" class="cards"></div>
+                <section id="map" class="map" aria-label="Mapa ilustrativo" hidden>
+                    <div class="map-caption"><strong>Mapa ilustrativo</strong><small>Posições simbólicas, sem escala ou
+                            rotas.</small></div><span class="map-neighborhood alto">Alto do Moura</span><span
+                        class="map-neighborhood centro">Centro</span>
+                    <div id="markers"></div>
+                </section>
+                <div id="empty" class="empty-state" hidden><span aria-hidden="true">⌕</span>
+                    <h2>Nenhuma descoberta por aqui.</h2>
+                    <p>Experimente outro termo ou limpe os filtros.</p><button class="secondary" data-clear>Limpar
+                        filtros</button>
+                </div>
+            </section>
+            <section class="partner-banner container">
+                <div><span class="eyebrow">QUEM FAZ CARUARU ACONTECER</span>
+                    <h2>Sua história também faz parte da rota.</h2>
+                    <p>Guias, artesãos, restaurantes e espaços culturais: venha somar.</p>
+                </div><button class="primary" data-form="partner">Quero ser parceiro ↗</button>
+            </section>
+        </main><%- include('includes/footer') %>

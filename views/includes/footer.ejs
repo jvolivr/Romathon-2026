@@ -1,0 +1,19 @@
+<footer class="site-footer"><a class="brand footer-brand" href="/">rota criativa <small>CARUARU</small></a>
+    <p>De perto, Caruaru tem muito mais para contar.</p><small>Protótipo demonstrativo · Cultura que aproxima.</small>
+</footer>
+<% if (page !=='entrada' ) { %>
+    <nav class="bottom-nav" aria-label="Navegação no celular"><a href="/explorar" <%- page==='explorar'
+            ? 'aria-current="page"' : '' %>><span aria-hidden="true">⌕</span>Explorar</a><a href="/meu-espaco" <%-
+            page==='meu-espaco' ? 'aria-current="page"' : '' %>><span aria-hidden="true">♡</span>Meu espaço</a></nav>
+    <% } %>
+        <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+        <dialog id="modal" aria-labelledby="modal-title">
+            <div class="modal-top"><span class="eyebrow">ROTA CRIATIVA · DEMONSTRAÇÃO</span><button class="icon-button"
+                    id="close-modal" aria-label="Fechar modal">✕</button></div>
+            <div id="modal-body"></div>
+        </dialog>
+        <noscript>
+            <p class="notice">Ative o JavaScript para explorar o catálogo e as interações demonstrativas.</p>
+        </noscript></body>
+
+        </html>

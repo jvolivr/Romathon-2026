@@ -1,0 +1,33 @@
+<%- include('includes/head') %><%- include('includes/header') %>
+        <main id="conteudo" class="entry container">
+            <section class="entry-story"><span class="eyebrow">O MELHOR DAQUI É VIVIDO DE PERTO</span>
+                <h1>Descubra histórias.<br>Viva experiências.<br><em>Apoie quem cria.</em></h1>
+                <p>Das mãos que moldam o barro aos sabores que acolhem. Encontre a sua próxima descoberta em Caruaru.
+                </p>
+                <div class="entry-art"><img src="/images/barro.svg"
+                        alt="Ilustração de vasos de barro, plantas e paisagem do Agreste"><span>Caruaru,
+                        Pernambuco<br><strong>Um encontro com as nossas raízes.</strong></span></div>
+            </section>
+            <section class="login-panel" aria-labelledby="login-title"><span class="eyebrow">BOM TER VOCÊ POR
+                    AQUI</span>
+                <h2 id="login-title">Sua rota começa aqui.</h2>
+                <p>Entre para guardar suas próximas descobertas.</p>
+                <form id="login-form" novalidate><label for="login-email">E-mail</label><input id="login-email"
+                        name="email" type="email" autocomplete="username" required placeholder="voce@exemplo.com"><small
+                        class="field-error" id="login-email-error"></small><label for="login-password">Senha</label>
+                    <div class="password-field"><input id="login-password" name="password" type="password"
+                            autocomplete="current-password" required placeholder="Sua senha"><button type="button"
+                            data-password="login-password" aria-label="Mostrar senha"
+                            aria-pressed="false">Mostrar</button></div><small class="field-error"
+                        id="login-password-error"></small><button type="button" class="text-button forgot"
+                        data-form="recover">Esqueci minha senha</button><button class="primary full"
+                        type="submit">Entrar <span aria-hidden="true">→</span></button>
+                    <p class="form-status" role="status"></p>
+                </form>
+                <p class="signup">Ainda não tem conta? <button class="text-button" data-form="signup">Criar
+                        conta</button></p>
+                <div class="divider"><span>conheça primeiro</span></div><a class="secondary full"
+                    href="/explorar">Visualizar demonstração →</a>
+                <p class="fine-print">Explore livremente. Login e cadastros ainda não estão disponíveis.</p>
+            </section>
+        </main><%- include('includes/footer') %>

@@ -1,0 +1,10 @@
+<header class="site-header">
+    <div class="header-inner"><a class="brand" href="/" aria-label="Rota Criativa Caruaru, entrada"><span
+                class="brand-icon" aria-hidden="true">◒</span><span>rota criativa<small>CARUARU</small></span></a>
+        <nav aria-label="Navegação principal"><a href="/explorar" <%- page==='explorar' ? 'aria-current="page"' : ''
+                %>>Explorar</a><a href="/meu-espaco" <%- page==='meu-espaco' ? 'aria-current="page"' : '' %>>Meu espaço
+                <span class="saved-count">0</span></a></nav><span class="header-note">
+            <%= page==='entrada' ? 'Feito de encontros.' : 'Olá, visitante!' %>
+        </span><button class="install secondary small" hidden>Instalar aplicativo</button>
+    </div>
+</header>
