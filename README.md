@@ -12,7 +12,7 @@ O que foi usado
 - CSS
 - JavaScript
 Como rodar
-Precisa ter o Node.js 20 ou superior instalado.
+Precisa ter o Node.js 22.5 ou superior instalado (o projeto usa SQLite embutido no Node.js).
 
 Abra a pasta do projeto no VS Code e rode no terminal:
 npm install
@@ -37,13 +37,16 @@ Pastas principais
 - controllers: código que abre as páginas.
 - services: espaço para usar depois.
 - server.js: arquivo que inicia o servidor.
-O que falta
-Ainda não tem banco de dados nem login funcionando de verdade. Os formulários são só para demonstração e não enviam e-mail.
+Login e armazenamento
+O cadastro, login, sessão e edição de nome/e-mail funcionam com SQLite. O banco é criado automaticamente em `data/rota.sqlite` na primeira execução. Senhas são armazenadas com hash `scrypt`; sessões usam tokens aleatórios guardados como hash e cookie `HttpOnly`.
 
-As alterações no perfil somem ao sair da página ou recarregar. Os interesses ficam guardados temporariamente no navegador.
+Use uma senha com pelo menos 8 caracteres. Para limpar os dados locais, pare o servidor e remova o arquivo `data/rota.sqlite`.
+
+A recuperação de senha por e-mail ainda depende da configuração de um serviço de envio.
+
+Os interesses salvos continuam apenas no armazenamento temporário do navegador e não são sincronizados com a conta.
 
 O mapa é ilustrativo e os contatos não fazem envio real. Os preços, horários e endereços também são exemplos.
 
 O projeto tem configuração de PWA, mas a instalação no celular ainda precisa ser testada. Sem internet, ele mostra um aviso para conectar novamente.
 
-A ideia é conectar com PostgreSQL depois e fazer o cadastro, login e os outros recursos funcionarem de verdade.

@@ -1,14 +1,13 @@
 <%- include('includes/head') %><%- include('includes/header') %>
         <main id="conteudo">
-            <div class="demo-strip">Meu espaço demonstrativo · Nenhuma conta autenticada ou informação gravada em banco.
-            </div>
+            <div class="demo-strip">Sua conta e seus dados de perfil são salvos neste dispositivo.</div>
             <div class="container space"><span class="eyebrow">SUAS PRÓXIMAS DESCOBERTAS</span>
                 <h1>Meu <em>espaço.</em></h1>
                 <section class="profile-panel"><img id="profile-avatar" src="/images/avatar.svg"
                         alt="Avatar ilustrativo de visitante">
                     <div>
-                        <h2 id="profile-name">Visitante da Rota</h2>
-                        <p id="profile-email">visitante@example.com</p><small>Perfil demonstrativo</small>
+                        <h2 id="profile-name"><%= user.name %></h2>
+                        <p id="profile-email"><%= user.email %></p><small>Perfil da sua conta</small>
                     </div><button class="secondary" data-form="profile">Editar perfil</button><button
                         class="text-button" data-form="password">Alterar senha</button>
                 </section>
@@ -34,8 +33,8 @@
                     </div><button class="primary" data-form="partner">Quero ser parceiro ↗</button>
                 </section>
                 <div class="exit-row">
-                    <p>Os interesses ficam apenas nesta sessão de demonstração.</p><button id="exit-demo"
-                        class="text-button">Sair da demonstração →</button>
+                    <p>Sua sessão permanece ativa neste dispositivo.</p><button id="exit-demo"
+                        class="text-button">Sair da conta →</button>
                 </div>
             </div>
         </main><%- include('includes/footer') %>

@@ -4,7 +4,7 @@ import { filterCatalog } from './filters.js';
 import { card } from './cards.js';
 import { getInterests, toggleInterest, clearInterests, canStore } from './interests.js';
 import { notify } from './modals.js';
-import './forms.js';
+import './forms.js?v=2';
 import './pwa.js';
 const items = getCatalog();
 let category = 'Todos';
@@ -54,5 +54,5 @@ document.addEventListener('interestschange', () => {
         (replacement || document.querySelector('#interests button, #interest-empty a'))?.focus();
     }
 });
-document.querySelector('#exit-demo')?.addEventListener('click', () => { clearInterests(); location.replace('/'); });
+document.querySelector('#exit-demo')?.addEventListener('click', async () => { clearInterests(); await fetch('/api/logout', { method: 'POST' }); location.replace('/'); });
 if (!canStore()) notify('Armazenamento indisponível. Os interesses durarão apenas nesta página.');
